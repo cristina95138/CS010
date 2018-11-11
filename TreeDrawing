@@ -1,0 +1,76 @@
+#include <iostream>
+using namespace std;
+
+int main() {
+   
+   int i, j, c;
+   int trunkHeight;
+   int trunkWidth;
+   int leafWidth;
+   
+   cout << "Enter trunk height: " << endl;
+   cin >> trunkHeight;
+   cout << "Enter trunk width: " << endl;
+   cin >> trunkWidth;
+   
+   //While loop to make sure the trunk width is an odd number
+   while((trunkWidth % 2) == 0) {
+      
+      cout << "Please enter an odd number for the width: " << endl;
+      cin >> trunkWidth;
+      
+   }
+   
+   cout << "Enter leaves width: " << endl;
+   cin >> leafWidth;
+   
+   cout << endl;
+   
+   //While loop to make sure the leaf width is an odd number
+   while((leafWidth % 2) == 0) {
+      
+      cout << "Please enter an odd number for the width: " << endl;
+      cin >> leafWidth;
+      
+   }
+      
+   //For loop for the leaves
+   for (i = 0; i < leafWidth; i += 2 ) {
+      
+      for (c = (leafWidth - i) / 2; c > 0; --c) {
+        
+         cout << " ";
+         
+      }
+      
+      for (int c = 0; c <= i; ++c) {
+         
+         cout << "*";
+         
+      }
+      
+      cout << endl;
+         
+   }
+   
+   //For loop for the trunk
+   for (j = 0; j < trunkHeight; ++j) {
+      
+      for (int k = (leafWidth - trunkWidth - 1) / 2; k >= 0; --k) {
+         
+         cout << " ";
+         
+      }
+   
+      for (int j = 0; j < trunkWidth; ++j) {
+         
+         cout << "*";
+         
+      }
+   
+   cout << endl;
+    
+   }
+
+    return 0;
+}
