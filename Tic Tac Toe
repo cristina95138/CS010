@@ -1,0 +1,197 @@
+#include <vector>
+#include <iostream>
+
+using namespace std;
+
+
+/// @brief Draws the provided tic-tac-toe board to the screen
+//  @param board is the tic-tac-toe board that should be drawn
+void drawBoard(const vector < char >&gameBoard) {
+   for (int i = 0; i < 9; i += 3) {
+      cout << "  " << gameBoard.at(i) << "  |  " << gameBoard.at(i + 1) << "  |  "
+         << gameBoard.at(i + 2) << "  " << endl;
+      if (i < 6) {
+         cout << "-----|-----|-----" << endl;
+      }
+   }
+   cout << endl;
+    
+   return;
+}
+
+
+
+/// @brief Fills vector with characters starting at lower case a.
+///
+///     If the vector is size 3 then it will have characters a to c.
+///     If the vector is size 5 then it will have characters a to e.
+///     If the vector is size 26 then it will have characters a to z.
+///
+/// @param v the vector to initialize
+/// @pre-condition the vector size will never be over 26
+void initVector(vector <char> &v) {
+   
+   for (unsigned int i = 0; i < v.size(); ++i) {
+      v.at(i) = static_cast<char>(97+i);
+   }
+      
+   return;
+}
+
+
+/// @brief Converts a character representing a cell to associated vector index
+/// @param the position to be converted to a vector index
+/// @return the integer index in the vector, should be 0 to (vector size - 1)
+int convertPosition(char boardPosition) {
+   
+   return static_cast<int> (boardPosition) - 97;
+   
+}
+
+
+/// @brief Predicate function to determine if a spot in board is available.
+/// @param board the current tic-tac-toe board 
+/// @param position is an index into vector to check if available
+/// @return true if position's state is available (not marked) AND is in bounds
+bool validPlacement(const vector<char>  &gameBoard, int positionIndex) {
+   
+   if (gameBoard.at(positionIndex) != 'X' && gameBoard.at(positionIndex) != 'O') {
+      return true;
+   }
+   else {
+      return false;
+   }
+}
+
+/// @brief Acquires a play from the user as to where to put her mark
+///
+///     Utilizes convertPosition and validPlacement functions to convert the
+///     user input and then determine if the converted input is a valid play.
+///     Continues asking for a position until a valid position has been entered.
+///
+/// @param board the current tic-tac-toe board 
+/// @return an integer index in board vector of a chosen available board spot
+int getPlay(const vector<char> &gameBoard) {
+   
+   char boardPosition = ' ';
+   unsigned int convert;
+    
+   cout << "Please choose a position: " << endl;
+   cin >> boardPosition;
+   convert = convertPosition(boardPosition);
+   
+   while (convert >= gameBoard.size()) {
+      cout << "Please choose a position: " << endl;
+      cin >> boardPosition;
+      convert = convertPosition(boardPosition);
+   }
+
+   while (!validPlacement(gameBoard, convert)) {
+      cout << "Please choose a position: " << endl;
+      cin >> boardPosition;
+      convert = convertPosition(boardPosition);
+   }
+   
+   return convertPosition(boardPosition);
+   
+}
+
+/// @brief Predicate function to determine if the game has been won
+///
+///     Winning conditions in tic-tac-toe require three marks from same 
+///     player in a single row, column or diagonal.
+///
+/// @param board the current tic-tac-toe board 
+/// @return true if the game has been won, false otherwise
+bool gameWon(const vector<char> &gameBoard) {
+   
+   if (((gameBoard.at(0) == gameBoard.at(1)) && (gameBoard.at(1) == gameBoard.at(2)))
+      || ((gameBoard.at(3) == gameBoard.at(4)) && (gameBoard.at(4) == gameBoard.at(5)))
+      || ((gameBoard.at(6) == gameBoard.at(7)) && (gameBoard.at(7) == gameBoard.at(7)))
+      || ((gameBoard.at(0) == gameBoard.at(4)) && (gameBoard.at(4) == gameBoard.at(8)))
+      || ((gameBoard.at(2) == gameBoard.at(4)) && (gameBoard.at(4) == gameBoard.at(6)))
+      || ((gameBoard.at(0) == gameBoard.at(3)) && (gameBoard.at(3) == gameBoard.at(6)))
+      || ((gameBoard.at(2) == gameBoard.at(5)) && (gameBoard.at(5) == gameBoard.at(8)))
+      || ((gameBoard.at(1) == gameBoard.at(4)) && (gameBoard.at(4) == gameBoard.at(7)))) {
+      return true;
+   }
+   else {
+      return false;
+   }
+}
+
+
+/// @brief Predicate function to determine if the board is full
+/// @param board the current tic-tac-toe board 
+/// @return true iff the board is full (no cell is available)
+bool boardFull(const vector<char> &gameBoard) {
+   
+   bool spot0 = validPlacement(gameBoard, 0);
+   bool spot1 = validPlacement(gameBoard, 1);
+   bool spot2 = validPlacement(gameBoard, 2);
+   bool spot3 = validPlacement(gameBoard, 3);
+   bool spot4 = validPlacement(gameBoard, 4);
+   bool spot5 = validPlacement(gameBoard, 5);
+   bool spot6 = validPlacement(gameBoard, 6);
+   bool spot7 = validPlacement(gameBoard, 7);
+   bool spot8 = validPlacement(gameBoard, 8);
+   
+   if (!spot0 & !spot1 & !spot2 & !spot3 & !spot4 & !spot5 & !spot6 & !spot7 & !spot8) {
+      return true;
+   }
+   
+   return false;
+   
+}
+
+
+// Global constants for player representation
+const int PLAYER1 = 0;
+const int PLAYER2 = 1;
+
+int main() {
+   // Variables that you may find useful to utilize
+   vector<char> gameBoard(9);
+   int curPlay;
+   int whosTurn = PLAYER1; // Player 1 always goes first and is 'X'
+   bool winner;
+   bool full;
+   
+   initVector(gameBoard);
+   drawBoard(gameBoard);
+   
+   winner = gameWon(gameBoard);
+   full = boardFull(gameBoard);
+
+   while (!winner & !full) {
+      curPlay = getPlay(gameBoard);
+      if (whosTurn % 2 == 0) {
+         gameBoard.at(curPlay) = 'X';
+         whosTurn = PLAYER2;
+      }
+      else {
+         gameBoard.at(curPlay) = 'O';
+         whosTurn = PLAYER1;
+      }
+
+      drawBoard(gameBoard);
+      cout << endl;
+      
+      winner = gameWon(gameBoard);
+      full = boardFull(gameBoard);
+   }
+
+   if (winner && !full) {
+      if (whosTurn % 2 == 0) {
+         cout << "Player 2 Wins!!";
+      }
+      else {
+         cout << "Player 1 Wins!!";
+      }
+   }
+   if (full) {
+      cout << "No one wins";
+   }
+
+   return 0;
+}
